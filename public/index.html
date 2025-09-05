@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Jorpor tube</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <header>
+    <h1>Jorportube</h1>
+    <p class="subtitle">Jorpor mai Jorjai</p>
+  </header>
+
+  <main>
+    <!-- Upload Section -->
+    <section class="upload-section">
+      <h2>Upload a Video</h2>
+      <form id="uploadForm" enctype="multipart/form-data">
+        <input type="text" name="title" placeholder="Video title" required>
+        <input type="file" name="video" accept="video/*" required>
+        <button type="submit">Upload</button>
+      </form>
+    </section>
+
+    <!-- Video Gallery -->
+    <section class="video-gallery">
+      <h2>Videos</h2>
+      <div id="videoList" class="grid"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Made with ❤️ by knight wisdom</p>
+  </footer>
+
+  <script>
+    // Upload video
+    document.getElementById("uploadForm").addEventListener("submit", async e => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      await fetch("/upload", { method: "POST", body: formData });
+      e.target.reset();
+      loadVideos();
+    });
+
+    // Load videos
+    async function loadVideos() {
+      const res = await fetch("/videos");
+      const videos = await res.json();
+      const list = document.getElementById("videoList");
+      list.innerHTML = "";
+      videos.forEach(v => {
+  const date = new Date(v.timestamp).toLocaleString(); // pretty format
+  list.innerHTML += `
+    <div class="video-card">
+      <div class="video-wrapper">
+        <video controls>
+          <source src="/video/${v.filename}" type="video/mp4">
+        </video>
+      </div>
+      <h3>${v.title}</h3>
+      <p class="timestamp">Uploaded: ${date}</p>
+      <button class="delete-btn" onclick="deleteVideo(${v.id})">Delete</button>
+    </div>
+  `;
+});
+
+    }
+
+    loadVideos();
+  </script>
+</body>
+</html>

@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const app = express();
-const PORT = 3000;
+const PORT = 80;
 
 // storage config
 const storage = multer.diskStorage({
@@ -80,3 +80,4 @@ app.get("/video/:filename", (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+
